@@ -15,26 +15,32 @@ namespace Api.Controllers
         }
 
         [HttpGet("students")]
-        public void GetAllStudents()
+        public IEnumerable<Student> GetAllStudents()
         {
             //return _emailRespository.Emails;
+
+            return Enumerable.Empty<Student>();
         }
 
         [HttpGet("students/{id}")]
-        public void GetStudentById()
+        public Student GetStudentById()
         {
             //return _emailRespository.Emails;
+
+            return new Student();
         }
 
         [HttpPost("new")]
-        public void AddStudent([FromBody] PostStudentDTO student)
+        public int AddStudent([FromBody] PostStudentDTO newStudent)
         {
             //_emailRespository.Emails.Add(email);
             //return _emailRespository.Emails;
+
+            return 0;
         }
 
         [HttpPut("edit")]
-        public void EditStudent([FromBody] Student newStudent)
+        public int EditStudent([FromBody] Student student)
         {
             //var oldEmail = _emailRespository.Emails.FirstOrDefault(x => x.Id == id);
 
@@ -49,13 +55,17 @@ namespace Api.Controllers
             //oldEmail.Message = newEmail.Message;
 
             //return _emailRespository.Emails;
+
+            return 0;
         }
 
         [HttpDelete("delete/{id}")]
-        public void DeleteEmail([FromRoute] int id)
+        public int DeleteEmail([FromRoute] int id)
         {
             //_emailRespository.Emails = _emailRespository.Emails.Where(x => x.Id != id).ToList();
             //return _emailRespository.Emails;
+
+            return 0;
         }
     }
 }
