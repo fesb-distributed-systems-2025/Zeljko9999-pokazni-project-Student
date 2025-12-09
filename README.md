@@ -1,6 +1,2 @@
-# Zeljko9999-project-test
-
-
-
-Hello world!
-
+# Zeljko9999-pokazni-project-Student
+Pokazni projekt .NET aplikacije
