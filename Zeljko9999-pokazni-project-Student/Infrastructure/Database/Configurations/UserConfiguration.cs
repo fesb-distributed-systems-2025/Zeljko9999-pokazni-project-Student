@@ -8,7 +8,7 @@ namespace Infrastructure.Database.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.ToTable("User");
+            builder.ToTable("Users");
 
             builder.HasKey(u => u.Id);
             builder.Property(e => e.Id).IsRequired();
