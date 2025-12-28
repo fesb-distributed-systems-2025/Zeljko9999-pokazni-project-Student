@@ -1,6 +1,7 @@
 using Application.Interfaces;
 using Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
+using Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,11 +13,10 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
 
-//builder.Services.AddTransient<IEmailRepository, EmailRepository>();
-//builder.Services.AddSingleton<IEmailLogic, EmailService>();
-
 builder.Services.AddDbContext<IApplicationDbContext, StudentDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddApplication();
 
 var app = builder.Build();
 
