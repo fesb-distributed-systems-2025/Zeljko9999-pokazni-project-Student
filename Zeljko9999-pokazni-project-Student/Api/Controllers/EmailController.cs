@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Api.Common;
+using Application.DTOs;
 using Application.Interfaces.Services;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -20,36 +21,35 @@ namespace Api.Controllers
         public async Task<IActionResult> GetAllEmails()
         {
             var result = await _emailService.GetAllEmails();
-            return Ok(result);
+            return this.HandleResult(result);
         }
-
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEmailById(int id)
         {
             var result = await _emailService.GetEmailById(id);
-            return Ok(result);
+            return this.HandleResult(result);
         }
 
         [HttpPost]
         public async Task<IActionResult> PostEmail([FromBody] PostEmailDTO email)
         {
             var result = await _emailService.AddEmail(email);
-            return Ok(result);
+            return this.HandleResult(result);
         }
 
         [HttpPut]
         public async Task<IActionResult> EditEmail([FromBody] PutEmailDTO email)
         {
             var result = await _emailService.UpdateEmail(email);
-            return Ok(result);
+            return this.HandleResult(result);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmail(int id)
         {
             var result = await _emailService.DeleteEmail(id);
-            return Ok(result);
+            return this.HandleResult(result);
         }
     }
 }
