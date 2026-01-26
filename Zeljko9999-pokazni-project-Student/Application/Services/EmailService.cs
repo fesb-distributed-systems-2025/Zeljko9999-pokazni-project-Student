@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.Common;
+using Application.DTOs;
 using Application.Interfaces;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
@@ -19,70 +20,81 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<Email?>> GetAllEmails()
+        public async Task<Result<IEnumerable<Email?>>> GetAllEmails()
         {
-            return await _emailRepository.GetEmails();
+            var emails = await _emailRepository.GetEmails();
+            return Result<IEnumerable<Email?>>.Success(emails);
         }
 
-        public async Task<Email?> GetEmailById(int id)
+        public async Task<Result<Email?>> GetEmailById(int id)
         {
-            return await _emailRepository.GetEmailById(id);
+            var email = await _emailRepository.GetEmailById(id);
+            return Result<Email?>.Success(email);
         }
 
-        public async Task<string> AddEmail(PostEmailDTO email)
+        public async Task<Result<object>> AddEmail(PostEmailDTO email)
         {
             var emailEntity = email.ToModel();
 
             var validationResult = await CreateOrUpdateValidation(emailEntity);
-            if (validationResult != null)
-                return validationResult;
+
+            if (!validationResult.IsSuccess)
+                return Result<object>.Failure(validationResult.ValidationItems);
 
             _emailRepository.CreateEmail(emailEntity);
             await _unitOfWork.SaveChangesAsync();
-            return $"Email successfully created with Id: {emailEntity.Id}";
+
+            return Result<object>.Success();
         }
 
-        public async Task<string> UpdateEmail(PutEmailDTO email)
+        public async Task<Result<object>> UpdateEmail(PutEmailDTO email)
         {
             var emailEntity = email.ToModel();
 
             var validationResult = await CreateOrUpdateValidation(emailEntity);
-            if (validationResult != null)
-                return validationResult;
+
+            if (!validationResult.IsSuccess)
+                return Result<object>.Failure(validationResult.ValidationItems);
 
             await _emailRepository.UpdateEmail(emailEntity);
             await _unitOfWork.SaveChangesAsync();
-            return $"Successfully updated email with Id: {emailEntity.Id}";
+
+            return Result<object>.Success();
         }
 
-        public async Task<string> DeleteEmail(int id)
+        public async Task<Result<object>> DeleteEmail(int id)
         {
             await _emailRepository.DeleteEmail(id);
             await _unitOfWork.SaveChangesAsync();
-            return $"Successfully deleted email with Id: {id}";
+
+            return Result<object>.Success();
         }
 
-        private async Task<string> CreateOrUpdateValidation(Email email)
+        private async Task<ValidationResult> CreateOrUpdateValidation(Email email)
         {
-            var senderId = await _studentRepository.GetStudentById(email.SenderId);
-            if (senderId is null)
-                return "Sender is not found.";
+            var result = new ValidationResult();
 
-            var receiverId =await _studentRepository.GetStudentById(email.ReceiverId);
-            if (receiverId is null)
-                return "Receiver is not found.";
+            var sender = await _studentRepository.GetStudentById(email.SenderId);
+            if (sender is null)
+                result.ValidationItems.Add("Sender is not found.");
+
+            var receiver = await _studentRepository.GetStudentById(email.ReceiverId);
+            if (receiver is null)
+                result.ValidationItems.Add("Receiver is not found.");
 
             if (string.IsNullOrWhiteSpace(email.Subject))
-                return "Subject is required.";
+                result.ValidationItems.Add("Subject is required.");
             else if (email.Subject.Length > Email.SubjectMaxLength)
-                return $"Subject cant have more than {Email.SubjectMaxLength} characters.";
+                result.ValidationItems.Add($"Subject cant have more than {Email.SubjectMaxLength} characters.");
             else if (email.Subject.Length < Email.SubjectMinLength)
-                return $"Subject must have more than {Email.SubjectMinLength} characters.";
+                result.ValidationItems.Add($"Subject must have more than {Email.SubjectMinLength} characters.");
 
-            if (!string.IsNullOrWhiteSpace(email.Message) && email.Message.Length > Email.MessageMaxLength)
-                return $"Message cant have more than {Email.MessageMaxLength} characters.";
+            if (!string.IsNullOrWhiteSpace(email.Message) &&
+                email.Message.Length > Email.MessageMaxLength)
+                result.ValidationItems.Add($"Message cant have more than {Email.MessageMaxLength} characters.");
 
-            return null;
+            return result;
         }
+
     }
 }

@@ -19,10 +19,12 @@ namespace Application
             services.AddScoped<IEmailRepository, EmailRepository>();
             services.AddScoped<IProgramTypeRepository, ProgramTypeRepository>();
             services.AddScoped<IStudentRepository, StudentRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IProgramTypeService, ProgramTypeService>();
             services.AddScoped<IStudentService, StudentService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
