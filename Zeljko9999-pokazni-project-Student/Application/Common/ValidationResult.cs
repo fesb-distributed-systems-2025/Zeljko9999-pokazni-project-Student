@@ -5,5 +5,4 @@
         public bool IsSuccess => !ValidationItems.Any();
         public List<string> ValidationItems { get; set; } = new();
     }
-
 }

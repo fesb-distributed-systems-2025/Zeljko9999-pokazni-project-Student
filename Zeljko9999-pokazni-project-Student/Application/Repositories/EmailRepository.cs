@@ -17,8 +17,6 @@ namespace Application.Repositories
             _logger = logger;
         }
 
-        private List<Email> Emails { get; set; }
-
         public async Task<IEnumerable<Email>> GetEmails()
         {
             var email = await _dbContext.Emails.AsNoTracking().ToListAsync();

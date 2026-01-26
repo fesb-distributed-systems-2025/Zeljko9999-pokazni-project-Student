@@ -1,11 +1,13 @@
 ﻿using Api.Common;
 using Application.DTOs;
 using Application.Interfaces.Services;
-using Domain.Models;
+using Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EmailController : ControllerBase
@@ -17,6 +19,7 @@ namespace Api.Controllers
             _emailService = emailService;
         }
 
+        //[Authorize(RoleId = (int)RoleEnum.Admin)]
         [HttpGet("allEmails")]
         public async Task<IActionResult> GetAllEmails()
         {
